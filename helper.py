@@ -92,29 +92,50 @@ def get_bitcoin_news():
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def setup_chrome_options():
-    chrome_options = Options()
+# Local
+# def setup_chrome_options():
+#     chrome_options = Options()
 
-    # Add arguments for full screen mode
-    chrome_options.add_argument("--start-maximized")  # Maximize for Windows/Linux
-    chrome_options.add_argument("--kiosk")  # Full screen mode for macOS
+#     # Add arguments for full screen mode
+#     chrome_options.add_argument("--start-maximized")  # Maximize for Windows/Linux
+#     chrome_options.add_argument("--kiosk")  # Full screen mode for macOS
     
-    # Additional window size settings for macOS
-    chrome_options.add_argument("--window-size=1920,1080")
+#     # Additional window size settings for macOS
+#     chrome_options.add_argument("--window-size=1920,1080")
     
-    # Additional useful options
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-notifications")  # Disable notifications
-    chrome_options.add_argument("--disable-infobars")  # Disable infobars
-    chrome_options.add_argument("--disable-popup-blocking")  # Disable popup blocking
+#     # Additional useful options
+#     chrome_options.add_argument("--headless")
+#     chrome_options.add_argument("--disable-notifications")  # Disable notifications
+#     chrome_options.add_argument("--disable-infobars")  # Disable infobars
+#     chrome_options.add_argument("--disable-popup-blocking")  # Disable popup blocking
     
-    return chrome_options
+#     return chrome_options
 
+# def create_driver():
+#     logger.info("Setting up ChromeDriver...")
+#     service = Service(ChromeDriverManager().install())
+#     driver = webdriver.Chrome(service=service, options=setup_chrome_options())
+#     return driver
+
+# EC2 Servier
 def create_driver():
-    logger.info("Setting up ChromeDriver...")
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=setup_chrome_options())
-    return driver
+    logger.info('Loading ChromeDriver ...')
+    try:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-sim-usage")
+        chrome_options.add_argument("--disable-gpu")
+
+        service = Service('/usr/local/bin/chromedriver')
+
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+
+        return driver
+    except Exception as e:
+        logger.error(f"ChromeDriver error: {e}")
+        raise
+
 
 def click_indicators(driver):
     try:
