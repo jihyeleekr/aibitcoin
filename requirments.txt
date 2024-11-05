@@ -1,6 +1,6 @@
 python-dotenv
 openai
-reqests
+requests
 ta
 selenium
 webdriver-manager
