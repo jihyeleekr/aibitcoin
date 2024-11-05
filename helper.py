@@ -124,16 +124,34 @@ def create_driver():
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-sim-usage")
+        chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
-
+        
+        # Chrome 바이너리 경로 명시적 지정
+        chrome_options.binary_location = "/usr/bin/google-chrome-stable"
+        
+        # 창 크기 설정 추가
+        chrome_options.add_argument("--window-size=1920,1080")
+        
+        # 기타 필요한 옵션들
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-infobars")
+        
         service = Service('/usr/local/bin/chromedriver')
-
+        
+        # 디버그 로깅
+        logger.info(f"Chrome binary path: {chrome_options.binary_location}")
+        logger.info("Attempting to create ChromeDriver...")
+        
         driver = webdriver.Chrome(service=service, options=chrome_options)
-
+        logger.info("ChromeDriver successfully created")
+        
         return driver
+        
     except Exception as e:
         logger.error(f"ChromeDriver error: {e}")
+        logger.error(f"Chrome binary exists: {os.path.exists('/usr/bin/google-chrome-stable')}")
+        logger.error(f"ChromeDriver exists: {os.path.exists('/usr/local/bin/chromedriver')}")
         raise
 
 
