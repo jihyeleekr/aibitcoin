@@ -7,6 +7,10 @@ from datetime import datetime, timedelta
 import sqlite3
 import time
 import pandas as pd
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class TradingDecision(BaseModel):
   decision: str
@@ -53,7 +57,7 @@ def calculate_performance(trades_df):
   if trades_df.empty:
     return 0
   
-  initial_balance = trades_df.iloc[-1]['usd_balance'] + trades_df.iloc[-1]['btc_balance'] * trades_df[-1]['btc_usd_price']
+  initial_balance = trades_df.iloc[-1]['usd_balance'] + trades_df.iloc[-1]['btc_balance'] * trades_df.iloc[-1]['btc_usd_price']
   final_balance = trades_df.iloc[0]['usd_balance'] + trades_df.iloc[0]['btc_balance'] * trades_df.iloc[0]['btc_usd_price']
 
   return (final_balance - initial_balance) / initial_balance * 100
@@ -67,7 +71,7 @@ def generate_reflection(trades_df, current_market_data):
      messages = [
        {
          "role" : "system",
-         "content" : "You are an AI trading assitant takes with analyzing recent trading performance and current market conditions to generate insights and improbements for futuer tradign decisions."
+         "content" : "You are an AI trading assitant takes with analyzing recent trading performance and current market conditions to generate insights and improvements for future trading decisions."
        },
        {
          "role" : "user",
@@ -81,10 +85,10 @@ def generate_reflection(trades_df, current_market_data):
           Please analyze this data and provide:
           1. A brief reflection on the recent trading decisions
           2. Insights on what worked well and what didn't
-          3. Suggestions for imporvment in future trading decisions
+          3. Suggestions for improvement in future trading decisions
           4. Any patterns or trends you notice in the market data
 
-          Limit your response to 250 wors or less.
+          Limit your response to 250 words or less.
           """
        }
      ]
@@ -119,7 +123,12 @@ def ai_trading():
   headlines = helper.get_bitcoin_news()
 
   # Youtube Transcript
-  transcript = helper.youtub_transcript("J-7tPXNz30A")
+  # transcript = helper.youtub_transcript("J-7tPXNz30A") : Error Occured with Library
+
+  f = open("strategy.txt", "r", encoding="utf-8")
+  transcript = f.read()
+  f.close()
+
 
   # Chart Image
   chart_image = helper.main()
@@ -220,22 +229,22 @@ def ai_trading():
   print(f"### AI Decision: {result.decision.upper()} ###")
   print(f"## Reason: {result.reason} ##")
 
-  order_excuted = False
+  order_executed = False
 
   if result.decision == "sell":
     print(f"### Sell Order Executed: {result.percentage}% of held BTC")
     if trader.sell_market_order(result.percentage) != "BTC less than $1 or no positions found":
-       order_excuted = True
+       order_executed = True
 
   elif result.decision == "buy":
     print(f"### Buy Order Executed: {result.percentage}% of available USD")
     if trader.buy_market_order(result.percentage) != "Insufficient balance to place a buy order.":
-        order_excuted = True
+        order_executed = True
 
   elif result.decision == "hold":
     print("### Hold Order Executed ###")
     print("Hold Reason:", result.reason)
-    order_excuted = True
+    order_executed = True
 
   time.sleep(1)
   balances = trader.cash_crypto_balance()
@@ -246,7 +255,7 @@ def ai_trading():
 
   try:
     conn = get_db_connection()
-    log_trade(conn, result.decision, result.percentage if order_excuted else 0, result.reason, 
+    log_trade(conn, result.decision, result.percentage if order_executed else 0, result.reason, 
                 btc_balance,  usd_balance, btc_avg_buy_price, btc_usd_price, reflection)
   except sqlite3.Error as db_error:
     print(f"Database error: {db_error}")
@@ -255,5 +264,11 @@ def ai_trading():
   
 
 # while True:
-#   time.sleep(600)
+#   try:
+#     ai_trading()
+#     time.sleep(3600 * 4) # Runs every 4 hours
+#   except Exception as e:
+#     logger.error(f"An error occured: {e}")
+#     time.sleep(300) # When error occured runs after 5 mins
+
 ai_trading()
