@@ -127,9 +127,6 @@ def create_driver():
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         
-        # Chrome 바이너리 경로 명시적 지정
-        chrome_options.binary_location = "/usr/bin/google-chrome-stable"
-        
         # 창 크기 설정 추가
         chrome_options.add_argument("--window-size=1920,1080")
         
@@ -137,7 +134,7 @@ def create_driver():
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--disable-infobars")
         
-        service = Service('/usr/local/bin/chromedriver')
+        service = Service('/usr/bin/chromedriver')
         
         # 디버그 로깅
         logger.info(f"Chrome binary path: {chrome_options.binary_location}")
