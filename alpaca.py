@@ -76,7 +76,7 @@ class CryptoTrader:
     ]
     return json.dumps(filtered_bars, indent=4)
 
-  def thirty_days(self, symbol = "BTC/USD", time = "1D"):
+  def last_thirty_days(self, symbol = "BTC/USD", time = "1D"):
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
     start_str = start_date.strftime('%Y-%m-%dT00:00:00Z')
