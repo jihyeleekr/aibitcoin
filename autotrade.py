@@ -8,6 +8,7 @@ import sqlite3
 import time
 import pandas as pd
 import logging
+import schedule
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -103,7 +104,7 @@ def ai_trading():
   # 1. Bring data
 
   # 30 days data
-  df_daily = trader.thirty_days()
+  df_daily = trader.last_thirty_days()
   df_daily = helper.add_indicators(df_daily)
 
   # 24 hours data
@@ -262,13 +263,18 @@ def ai_trading():
   finally:
     conn.close()
   
-
-# while True:
+# def job():
 #   try:
 #     ai_trading()
-#     time.sleep(3600 * 4) # Runs every 4 hours
 #   except Exception as e:
-#     logger.error(f"An error occured: {e}")
-#     time.sleep(300) # When error occured runs after 5 mins
+#     logger.error(f"An Error occrued: {e}")
+  
+#   schedule.every().day.at("9:00").do(job) 
+#   schedule.every().day.at("15:00").do(job) 
+#   schedule.every().day.at("21:00").do(job) 
+
+# while True:
+#   schedule.run_pending()
+#   time.sleep(1)
 
 ai_trading()
