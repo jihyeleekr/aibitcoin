@@ -50,14 +50,6 @@ This project is an automated Bitcoin trading bot developed in Python, utilizing 
     OPENAI_API_KEY=your_openai_api_key
     ```
 
-### Database Initialization
-
-Run the `init_db()` function to set up an SQLite database for logging trades:
-```python
-from your_module import init_db
-init_db()
-```
-
 ### Useage
 
 To start the trading bot, run:
