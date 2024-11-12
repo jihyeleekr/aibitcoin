@@ -62,9 +62,9 @@ python autotrade.py
 Visualize trades and performance with Streamlit:
 
 ```
-streamlit run visualize.py
+streamlit run streamlit_app.py
 ```
-
+link: http://localhost:8501/
 ### Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with a clear description of changes.
 
