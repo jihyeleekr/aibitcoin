@@ -64,7 +64,7 @@ Visualize trades and performance with Streamlit:
 ```
 streamlit run streamlit_app.py
 ```
-link: http://localhost:8501/
+link: http://10.239.163.15:8501
 ### Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with a clear description of changes.
 
